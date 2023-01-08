@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"self-payrol/config"
+	"self-payrol/helper"
 	"self-payrol/model"
 
 	"gorm.io/gorm"
@@ -43,7 +44,10 @@ func (c *companyRepository) CreateOrUpdate(ctx context.Context, company *model.C
 		return nil, err
 	}
 
-	// TODO: tuliskan baris code untuk update data company
+	// TODO: tuliskan baris code untuk update data company ✔️
+	if err := c.Cfg.Database().WithContext(ctx).Updates(company).Find(companyModel).Error; err != nil {
+		return nil, err
+	}
 
 	return companyModel, nil
 }
@@ -54,11 +58,19 @@ func (c *companyRepository) DebitBalance(ctx context.Context, amount int, note s
 		return errors.New("company data not found")
 	}
 
-	// TODO: tuliskan baris code untuk mengurangi balance
+	// TODO: tuliskan baris code untuk mengurangi balance ✔️
+	if company.Balance < amount {
+		return helper.ErrBalance
+	}
+
+	if amount < 0 {
+		return helper.ErrAmount
+	}
+
+	company.Balance -= amount
 
 	if err := c.Cfg.Database().WithContext(ctx).Model(company).Updates(company).Find(company).Error; err != nil {
 		return err
-
 	}
 
 	if err := c.Cfg.Database().WithContext(ctx).Create(&model.Transaction{
@@ -78,7 +90,12 @@ func (c *companyRepository) AddBalance(ctx context.Context, balance int) (*model
 		return nil, errors.New("company data not found")
 	}
 
-	// TODO: tuliskan baris code untuk topup balance
+	// TODO: tuliskan baris code untuk topup balance ✔️
+	if balance < 0 {
+		return nil, helper.ErrBalance
+	}
+
+	company.Balance += balance
 
 	if err := c.Cfg.Database().WithContext(ctx).Model(company).Updates(company).Find(company).Error; err != nil {
 		return nil, err
