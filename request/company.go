@@ -14,7 +14,7 @@ type (
 	}
 )
 
-// TODO: tuliskan validasi untuk CompanyRequest dengan rule semua field required
+// TODO: tuliskan validasi untuk CompanyRequest dengan rule semua field required ✔️
 
 func (req TopupCompanyBalance) Validate() error {
 	return validation.ValidateStruct(
