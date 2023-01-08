@@ -16,24 +16,34 @@ func NewUserRepository(cfg config.Config) model.UserRepository {
 
 func (p *userRepository) FindByID(ctx context.Context, id int) (*model.User, error) {
 
-	// TODO: buat fungsi untuk mencari user berdasarkan ID pada parameter
+	// TODO: buat fungsi untuk mencari user berdasarkan ID pada parameter ✔️
+	user := new(model.User)
 
-	panic("implement me ")
+	if err := p.Cfg.Database().WithContext(ctx).
+		Preload("Position").
+		Where("id = ?", id).
+		Take(user).Error; err != nil {
+		return nil, err
+	}
+
+	return user, nil
 
 }
 
 func (p *userRepository) Create(ctx context.Context, user *model.User) (*model.User, error) {
-	// TODO: buat fungsi untuk membuat user berdasarkan struct parameter
-
-	panic("implement me ")
-
+	// TODO: buat fungsi untuk membuat user berdasarkan struct parameter ✔️
+	if err := p.Cfg.Database().WithContext(ctx).Create(user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func (p *userRepository) UpdateByID(ctx context.Context, id int, user *model.User) (*model.User, error) {
-	// TODO: buat fungsi untuk update user berdasarkan struct parameter
-
-	panic("implement me ")
-
+	// TODO: buat fungsi untuk update user berdasarkan struct parameter ✔️
+	if err := p.Cfg.Database().WithContext(ctx).Updates(user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func (p *userRepository) Delete(ctx context.Context, id int) error {
