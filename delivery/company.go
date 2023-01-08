@@ -24,8 +24,10 @@ func NewCompanyDelivery(companyUsecase model.CompanyUsecase) CompanyDelivery {
 func (comp *companyDelivery) Mount(group *echo.Group) {
 
 	// TODO:
-	// 1. Buatlah handler yang mengarah ke fungsi comp.GetDetailCompanyHandler
-	// 2. Buatlah handler yang mengarah ke fungsi comp.UpdateOrCreateCompanyHandler
+	// 1. Buatlah handler yang mengarah ke fungsi comp.GetDetailCompanyHandler ✔️
+	group.GET("", comp.GetDetailCompanyHandler)
+	// 2. Buatlah handler yang mengarah ke fungsi comp.UpdateOrCreateCompanyHandler ✔️
+	group.PUT("", comp.UpdateOrCreateCompanyHandler)
 
 	group.POST("/topup", comp.TopupBalanceHandler)
 
@@ -68,9 +70,20 @@ func (comp *companyDelivery) UpdateOrCreateCompanyHandler(e echo.Context) error 
 func (comp *companyDelivery) TopupBalanceHandler(e echo.Context) error {
 	ctx := e.Request().Context()
 
-	//TODO: lakukan validasi request disini
+	//TODO: lakukan validasi request disini ✔️
 
-	company, i, err := comp.companyUsecase.TopupBalance(ctx)
+	req := new(request.TopupCompanyBalance)
+
+	if err := e.Bind(req); err != nil {
+		return helper.ResponseValidationErrorJson(e, "Error binding struct", err.Error())
+	}
+
+	if err := req.Validate(); err != nil {
+		errVal := err.(validation.Errors)
+		return helper.ResponseValidationErrorJson(e, "Error validation", errVal)
+	}
+
+	company, i, err := comp.companyUsecase.TopupBalance(ctx, *req)
 	if err != nil {
 		return helper.ResponseErrorJson(e, i, err)
 	}
