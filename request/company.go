@@ -22,3 +22,12 @@ func (req TopupCompanyBalance) Validate() error {
 		validation.Field(&req.Balance, validation.Required),
 	)
 }
+
+func (com CompanyRequest) Validate() error {
+	return validation.ValidateStruct(
+		&com,
+		validation.Field(&com.Balance, validation.Required),
+		validation.Field(&com.Address, validation.Required),
+		validation.Field(&com.Name, validation.Required),
+	)
+}
