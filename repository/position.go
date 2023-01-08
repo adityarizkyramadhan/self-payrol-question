@@ -50,7 +50,7 @@ func (p *positionRepository) Delete(ctx context.Context, id int) error {
 }
 
 func (p *positionRepository) Fetch(ctx context.Context, limit, offset int) ([]*model.Position, error) {
-	// TODO: Buat fungsi untuk mendapatkan data position berdasarkan parameter
+	// TODO: Buat fungsi untuk mendapatkan data position berdasarkan parameter ✔️
 	var data []*model.Position
 	if err := p.Cfg.Database().WithContext(ctx).
 		Limit(limit).
